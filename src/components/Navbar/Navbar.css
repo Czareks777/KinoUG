@@ -1,0 +1,29 @@
+.navbar {
+    width: 100vw;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: black;
+    margin: 0;
+}
+
+.navbar-project{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 50px
+}
+
+.navbar-project-logo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.navbar-buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin-right: 50px;
+}
