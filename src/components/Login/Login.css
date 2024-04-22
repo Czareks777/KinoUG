@@ -11,7 +11,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(to bottom, black, gray, black);
+    /*background: linear-gradient(to bottom, black, gray, black);*/
+    background: black;
     gap: 3vh;
 }
 
@@ -20,8 +21,9 @@
     flex-direction: column;
     border: 2px solid white;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0);
-    backdrop-filter: blur(50px);
+    /*background-color: rgba(255, 255, 255, 0);*/
+    /*backdrop-filter: blur(50px);*/
+    background: #2d2d2c;
     width: 44vw;
     height: 50vh;
     color: white;
