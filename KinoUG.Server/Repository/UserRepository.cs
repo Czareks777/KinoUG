@@ -26,15 +26,15 @@ namespace KinoUG.Server.Repository
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User> GetUserByUsernameAsync(string username)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            if (username.IsNullOrEmpty())
+            if (email.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(username), "Username is required");
+                throw new ArgumentNullException(nameof(email), "Username is required");
             }
             else
             {
-                return await _context.Users.SingleOrDefaultAsync(x => x.Login == username);
+                return await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
             }
             
         }

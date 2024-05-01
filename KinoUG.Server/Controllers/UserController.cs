@@ -14,8 +14,6 @@ namespace KinoUG.Server.Controllers
             _context = context;
         }
 
-        
-        
 
     }
 }

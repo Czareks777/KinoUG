@@ -1,8 +1,10 @@
-﻿namespace KinoUG.Server.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace KinoUG.Server.Models
 {
     public class Roles
     {
-        public string Client { get; set; }= "Client";
-        public string Admin { get; set; } = "Admin";    
+    public const string Admin = "Admin";
+    public const string User = "User";
     }
 }

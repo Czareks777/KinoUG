@@ -11,11 +11,11 @@ namespace KinoUG.Server.DTO
         [Required]
         public string ConfirmPassword { get; set; }
         [Required]
-        public string Login { get; set; }
-        [Required]
         public string Name { get; set; }
         [Required]
         public string Surname { get; set; }
+        
+        public string? UserName { get; set; }    
 
     }
 }
