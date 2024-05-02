@@ -1,13 +1,16 @@
 ﻿using KinoUG.Server.Data;
 using KinoUG.Server.Models;
 using KinoUG.Server.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics.CodeAnalysis;
 
 namespace KinoUG.Server.Repository
+
 {
+    [Authorize(Roles = "Admin")]
     public class UserRepository : IUserRepository
     {
         private readonly DataContext _context;
@@ -30,7 +33,7 @@ namespace KinoUG.Server.Repository
         {
             if (email.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(email), "Username is required");
+                throw new ArgumentNullException(nameof(email), "Email is required");
             }
             else
             {
