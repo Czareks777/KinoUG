@@ -69,6 +69,14 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 }).AddEntityFrameworkStores<DataContext>()
 .AddRoles<IdentityRole>();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
@@ -101,6 +109,7 @@ app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(
 );
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 app.UseHttpsRedirection();
 
 
