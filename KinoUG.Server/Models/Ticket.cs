@@ -8,10 +8,11 @@ namespace KinoUG.Server.Models
         [ForeignKey("UserId")]
         public string UserId { get;set; }
         [ForeignKey("SeatId")]
-        public int Seat { get; set; }
+        public int SeatId { get; set; }
+        public Seat Seat { get; set; }
         [ForeignKey("MovieId")]
         public int MovieId { get; set; }
-        public int Price { get; } = 20;
+        public int Price { get; set;}
         public User User { get; set; }
     }
 }

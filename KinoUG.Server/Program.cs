@@ -20,6 +20,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<SeedHall>(); 
+
 
 builder.Services.AddAuthentication(auth =>
 {
@@ -86,8 +88,11 @@ using (var scope = app.Services.CreateScope())
     {
         await roleManager.CreateAsync(new IdentityRole(Roles.User));
     }
+    var seedHall = services.GetRequiredService<SeedHall>();
+    await seedHall.InitializeRoomTemplate();
 }
 app.UseDefaultFiles();
+
 app.UseStaticFiles();
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
 .AllowAnyMethod()

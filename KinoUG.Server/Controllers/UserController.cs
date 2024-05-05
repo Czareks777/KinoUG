@@ -22,8 +22,13 @@ namespace KinoUG.Server.Controllers
         {
             return await _context.Users.ToListAsync();
         }
-        
-        
+
+        [HttpGet("{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<User>> GetUser(int userId)
+        {
+            return await _context.Users.FindAsync(userId);
+        }
         
     }
 }

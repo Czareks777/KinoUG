@@ -23,5 +23,17 @@ namespace KinoUG.Server.Controllers
         {
             return await _context.Movies.ToListAsync();
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddMovie(Movie movie)
+        {
+            _context.Movies.Add(movie);
+            await _context.SaveChangesAsync();
+            return Ok(movie);
+        }
+        
+    
+        
     }
 }

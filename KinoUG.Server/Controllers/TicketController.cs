@@ -24,7 +24,7 @@ namespace KinoUG.Server.Controllers
             return await _context.Tickets.ToListAsync();
         }
         
-        
+        /*
         [HttpPost]
         public async Task<IActionResult> AssignSeatToTicket(int seatId, string userId, int movieId)
         {
@@ -44,16 +44,33 @@ namespace KinoUG.Server.Controllers
             var ticket = new Ticket
             {
                 UserId = userId,
-                Seat = seatId, 
+                SeatId = seatId, 
                 MovieId = movieId
             };
 
-            seat.Ticket = ticket; 
+            seat.Tickets = ticket; 
 
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
 
             return Ok("Ticket successfully assigned to the seat..");
+        }
+        */
+        
+        [HttpPost("cancel/{ticketId}")]
+        public async Task<IActionResult> CancelTicket(int ticketId)
+        {
+            var ticket = await _context.Tickets.Include(t => t.SeatId)
+                .FirstOrDefaultAsync(t => t.Id == ticketId);
+
+            if (ticket == null)
+            {
+                return NotFound("Ticket not found.");
+            }
+            var seat  = await _context.Seats.FindAsync(ticket.SeatId);
+            _context.Tickets.Remove(ticket);
+            await _context.SaveChangesAsync();
+            return Ok("Ticket has been canceled and seat freed.");
         }
     }
 }

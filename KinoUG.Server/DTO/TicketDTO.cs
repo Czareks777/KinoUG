@@ -9,5 +9,6 @@ namespace KinoUG.Server.DTO
         public int SeatId { get; set; }
         [ForeignKey("MovieId")]
         public int MovieId { get; set; }
+        public int Price { get; set; }  
     }
 }

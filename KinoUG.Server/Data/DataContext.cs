@@ -16,6 +16,7 @@ namespace KinoUG.Server.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet <Seat> Seats { get; set; }
+        public DbSet<Hall> Halls { get; set; }
        
 
 
@@ -32,7 +33,10 @@ namespace KinoUG.Server.Data
                 .HasMany(m => m.Seats)
                 .WithOne(t => t.Hall)
                 .HasForeignKey(t => t.HallId);
-
+            modelBuilder.Entity<Seat>()
+        .HasMany(s => s.Tickets) 
+        .WithOne(t => t.Seat)  
+        .HasForeignKey(t => t.Id); 
 
         }
 
