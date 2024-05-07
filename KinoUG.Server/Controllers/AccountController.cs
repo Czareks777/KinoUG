@@ -79,7 +79,7 @@ namespace KinoUG.Server.Controllers
 
             // Generate JWT
             var user = await _userManager.FindByNameAsync(model.Email);
-            var token = await _tokenService.GenerateJwtToken(user, TimeSpan.FromMinutes(30));
+            var token = await _tokenService.GenerateJwtToken(user, TimeSpan.FromMinutes(600));
 
             return Ok(token);
         }

@@ -1,4 +1,7 @@
-﻿using KinoUG.Server.Data;
+﻿using AutoMapper;
+using KinoUG.Server.Data;
+using KinoUG.Server.DTO;
+using KinoUG.Server.Helper;
 using KinoUG.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,29 +14,58 @@ namespace KinoUG.Server.Controllers
     public class MovieController : BaseApiController
     {
         private readonly DataContext _context;
-        public MovieController(DataContext context)
+        private readonly IMapper _automapper;
+        public MovieController(DataContext context, IMapper automapper)
         {
             _context = context;
-        }
-        
-        
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
-        {
-            return await _context.Movies.ToListAsync();
+            _automapper = automapper;
         }
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> AddMovie(Movie movie)
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies()
         {
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
-            return Ok(movie);
+           var movies = await _context.Movies.ToListAsync();
+            return _automapper.Map<List<MovieDTO>>(movies);
         }
+
         
-    
+        [HttpPost]
+        public async Task<IActionResult> AddMovie(AddMovieDTO film)
+        {
+            var movie = new Movie
+            {
+                Title = film.Title,
+                Description = film.Description,
+
+            };
+            
+            _context.Movies.Add(movie);
+            
+            await _context.SaveChangesAsync();
+            var movieDto = _automapper.Map<MovieDTO>(movie);    
+
+            return Ok(movieDto);
+        }
+
+        // DELETE: api/movies/5
+        [HttpDelete("{id}")]
         
+        public async Task<IActionResult> DeleteMovie(int id)
+        {
+            var movie = await _context.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            _context.Movies.Remove(movie);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
+
     }
 }

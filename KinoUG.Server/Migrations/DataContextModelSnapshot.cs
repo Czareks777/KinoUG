@@ -37,11 +37,11 @@ namespace KinoUG.Server.Migrations
 
             modelBuilder.Entity("KinoUG.Server.Models.Movie", b =>
                 {
-                    b.Property<int>("MovieId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovieId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -51,9 +51,35 @@ namespace KinoUG.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("MovieId");
+                    b.HasKey("Id");
 
                     b.ToTable("Movies");
+                });
+
+            modelBuilder.Entity("KinoUG.Server.Models.Schedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("HallId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HallId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("KinoUG.Server.Models.Seat", b =>
@@ -70,23 +96,15 @@ namespace KinoUG.Server.Migrations
                     b.Property<int>("HallId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MovieId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Row")
                         .HasColumnType("int");
 
                     b.Property<int>("SeatNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HallId");
-
-                    b.HasIndex("MovieId");
 
                     b.ToTable("Seats");
                 });
@@ -94,12 +112,15 @@ namespace KinoUG.Server.Migrations
             modelBuilder.Entity("KinoUG.Server.Models.Ticket", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ScheduleId")
                         .HasColumnType("int");
 
                     b.Property<int>("SeatId")
@@ -110,6 +131,10 @@ namespace KinoUG.Server.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.HasIndex("SeatId");
 
                     b.HasIndex("UserId");
 
@@ -322,6 +347,25 @@ namespace KinoUG.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("KinoUG.Server.Models.Schedule", b =>
+                {
+                    b.HasOne("KinoUG.Server.Models.Hall", "Hall")
+                        .WithMany("Schedules")
+                        .HasForeignKey("HallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KinoUG.Server.Models.Movie", "Movie")
+                        .WithMany("Schedules")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hall");
+
+                    b.Navigation("Movie");
+                });
+
             modelBuilder.Entity("KinoUG.Server.Models.Seat", b =>
                 {
                     b.HasOne("KinoUG.Server.Models.Hall", "Hall")
@@ -330,18 +374,20 @@ namespace KinoUG.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KinoUG.Server.Models.Movie", null)
-                        .WithMany("Seats")
-                        .HasForeignKey("MovieId");
-
                     b.Navigation("Hall");
                 });
 
             modelBuilder.Entity("KinoUG.Server.Models.Ticket", b =>
                 {
+                    b.HasOne("KinoUG.Server.Models.Schedule", "Schedule")
+                        .WithMany("Tickets")
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("KinoUG.Server.Models.Seat", "Seat")
                         .WithMany("Tickets")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -350,6 +396,8 @@ namespace KinoUG.Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Schedule");
 
                     b.Navigation("Seat");
 
@@ -409,12 +457,19 @@ namespace KinoUG.Server.Migrations
 
             modelBuilder.Entity("KinoUG.Server.Models.Hall", b =>
                 {
+                    b.Navigation("Schedules");
+
                     b.Navigation("Seats");
                 });
 
             modelBuilder.Entity("KinoUG.Server.Models.Movie", b =>
                 {
-                    b.Navigation("Seats");
+                    b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("KinoUG.Server.Models.Schedule", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("KinoUG.Server.Models.Seat", b =>

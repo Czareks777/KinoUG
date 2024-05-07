@@ -1,4 +1,5 @@
 ﻿using KinoUG.Server.Data;
+using KinoUG.Server.DTO;
 using KinoUG.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,23 +19,17 @@ namespace KinoUG.Server.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
         {
             return await _context.Tickets.ToListAsync();
         }
         
-        /*
+        
         [HttpPost]
-        public async Task<IActionResult> AssignSeatToTicket(int seatId, string userId, int movieId)
+        public async Task<IActionResult> AddTicket(AddTicketDTO addTicketDTO)
         {
-            var seat = await _context.Seats.FindAsync(seatId);
-            if (seat == null)
-            {
-                return BadRequest("Seat is taken or non existent");
-            }
 
-            var ticketFind = await _context.Tickets.FindAsync(movieId, seatId);
+            var ticketFind = await _context.Tickets.Where(t=>t.SeatId.Equals(addTicketDTO.SeatId)&&t.ScheduleId.Equals(addTicketDTO.ScheduleId)).FirstOrDefaultAsync();
            
             if (ticketFind != null)
             {
@@ -43,19 +38,21 @@ namespace KinoUG.Server.Controllers
            
             var ticket = new Ticket
             {
-                UserId = userId,
-                SeatId = seatId, 
-                MovieId = movieId
+               UserId = "02ba3193-a80f-4013-bd8b-beb1bf4a0b41",
+               SeatId = addTicketDTO.SeatId, 
+               ScheduleId = addTicketDTO.ScheduleId,
+               Price = addTicketDTO.Price,
             };
 
-            seat.Tickets = ticket; 
 
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
 
             return Ok("Ticket successfully assigned to the seat..");
         }
-        */
+        
+        
+       
         
         [HttpPost("cancel/{ticketId}")]
         public async Task<IActionResult> CancelTicket(int ticketId)

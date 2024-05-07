@@ -10,6 +10,7 @@ namespace KinoUG.Server.Helper
         {
             CreateMap<User,UserDTO>();
             CreateMap<RegisterDTO, User>();
+            CreateMap<Movie, MovieDTO>();
         }
     }
 }

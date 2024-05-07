@@ -14,7 +14,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpGet("{hallId}")]
-        public async Task<IActionResult> GetSeats(int hallId)
+        public async Task<IActionResult> GetHall(int hallId)
         {
             var seats = await _context.Seats.Where(s => s.HallId == hallId).Select(s => new
             {
@@ -22,8 +22,12 @@ namespace KinoUG.Server.Controllers
                 Row = s.Row,
                 Column = s.Column,
             }).ToListAsync();
-
-            return Ok(seats);
+            var hall = new
+            {
+                HallId = hallId,
+                Seats = seats
+            };  
+            return Ok(hall);
         }
     }
 }

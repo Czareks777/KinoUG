@@ -17,6 +17,7 @@ namespace KinoUG.Server.Data
         public DbSet<Movie> Movies { get; set; }
         public DbSet <Seat> Seats { get; set; }
         public DbSet<Hall> Halls { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
        
 
 
@@ -28,15 +29,25 @@ namespace KinoUG.Server.Data
                 .WithOne(t => t.User)
                 .HasForeignKey(t => t.UserId);
             
-            base.OnModelCreating(modelBuilder);
+            
             modelBuilder.Entity<Hall>()
                 .HasMany(m => m.Seats)
                 .WithOne(t => t.Hall)
                 .HasForeignKey(t => t.HallId);
-            modelBuilder.Entity<Seat>()
-        .HasMany(s => s.Tickets) 
-        .WithOne(t => t.Seat)  
-        .HasForeignKey(t => t.Id); 
+           
+           modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Seat)
+                .WithMany(s => s.Tickets)
+                .HasForeignKey(t => t.SeatId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Schedule>()
+                .HasMany(s => s.Tickets)
+                .WithOne(t => t.Schedule)
+                .HasForeignKey(t => t.ScheduleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+
 
         }
 

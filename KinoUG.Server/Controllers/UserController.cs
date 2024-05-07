@@ -17,14 +17,15 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Route("GetUsers")]
+       
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
 
         [HttpGet("{userId}")]
-        [Authorize(Roles = "Admin")]
+       
         public async Task<ActionResult<User>> GetUser(int userId)
         {
             return await _context.Users.FindAsync(userId);
