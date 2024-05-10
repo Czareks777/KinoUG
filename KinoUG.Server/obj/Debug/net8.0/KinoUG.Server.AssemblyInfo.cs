@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KinoUG.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82bd9193c7d0898f28b9406c14b0b1de44c21775")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+414d7e6ce0defe9a113ff033a646fc7ed2786908")]
 [assembly: System.Reflection.AssemblyProductAttribute("KinoUG.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KinoUG.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

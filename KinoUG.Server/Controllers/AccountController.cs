@@ -77,6 +77,10 @@ namespace KinoUG.Server.Controllers
                 return BadRequest("Incorrect email or password");
             }
 
+            // Session for login for 10s
+            HttpContext.Session.SetString("UserEmail", userEmail.Email);
+            HttpContext.Session.SetString("UserPassword", model.Password);
+
             // Generate JWT
             var user = await _userManager.FindByNameAsync(model.Email);
             var token = await _tokenService.GenerateJwtToken(user, TimeSpan.FromMinutes(600));
@@ -84,6 +88,25 @@ namespace KinoUG.Server.Controllers
             return Ok(token);
         }
 
+
+        [HttpGet]
+        [Route("session-info")]
+        public IActionResult SessionInfo()
+        {
+            var email = HttpContext.Session.GetString("UserEmail");
+            var password = HttpContext.Session.GetString("UserPassword");
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return Unauthorized("Session has expired or user not logged in");
+            }
+
+            return Ok(new
+            {
+                Email = email,
+                Password = password 
+            });
+        }
 
     }
 }
