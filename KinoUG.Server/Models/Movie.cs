@@ -1,4 +1,6 @@
-﻿namespace KinoUG.Server.Models
+﻿using System.Reflection.Metadata;
+
+namespace KinoUG.Server.Models
 {
     public class Movie
     {
@@ -6,5 +8,6 @@
         public string Title { get; set; }
         public string Description { get; set; }
         public List<Schedule> Schedules { get; set; }
+      
     }
 }

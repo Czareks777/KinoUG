@@ -64,13 +64,13 @@ namespace KinoUG.Server.Controllers
         [Route("login")]
         public async Task<ActionResult<string>> Login([FromBody] LoginDTO model)
         {
-            var userEmail = await _userManager.FindByEmailAsync(model.Email);
-            if (userEmail == null)
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
             {
                 return BadRequest("Incorrect email");
             }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(userEmail, model.Password,false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password,false);
 
             if (!result.Succeeded)
             {
@@ -78,7 +78,7 @@ namespace KinoUG.Server.Controllers
             }
 
             // Generate JWT
-            var user = await _userManager.FindByNameAsync(model.Email);
+           
             var token = await _tokenService.GenerateJwtToken(user, TimeSpan.FromMinutes(600));
 
             return Ok(token);

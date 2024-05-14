@@ -8,7 +8,7 @@ using System.Text;
 
 namespace KinoUG.Server.Services
 {
-    public class TokenService :ITokenService
+    public class TokenService : ITokenService
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
@@ -24,7 +24,7 @@ namespace KinoUG.Server.Services
             // Define the token claims (username and unique guid)
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
