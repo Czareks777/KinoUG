@@ -78,7 +78,7 @@ namespace KinoUG.Server.Controllers
             }
 
             // Session for login for 10s
-            HttpContext.Session.SetString("UserEmail", userEmail.Email);
+            HttpContext.Session.SetString("UserEmail", user.Email);
             HttpContext.Session.SetString("UserPassword", model.Password);
 
             // Generate JWT
