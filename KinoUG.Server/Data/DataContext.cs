@@ -18,6 +18,8 @@ namespace KinoUG.Server.Data
         public DbSet <Seat> Seats { get; set; }
         public DbSet<Hall> Halls { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Cart> Carts { get; set; }
        
 
 

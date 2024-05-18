@@ -1,18 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KinoUG.Server.Models
 {
     public class Cart
-    { 
-        public string UserId { get; set; }
-        public User User { get; set; }
-        [ForeignKey("TicketId")]
-        public int TicketId { get; set; }
-        public Ticket Ticket { get; set; }
+    {
+        public int Id { get; set;}
+        [ForeignKey("UserId")]
+        [Required]
+        public string UserId { get; set;}
+        public List <CartItem> Items { get; set;}
         [NotMapped]
-        public double Price { get; set; }
-
-        //public int Count
-        
+        public decimal TotalPrice { get; set;}
     }
 }

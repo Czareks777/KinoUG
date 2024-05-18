@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "brBXhsL0gq4U+9pp5K7xVAsNnjXA6G1QKUCHei5okWmPFh+SCUBak1c4dIBOkqFaCtpE65woylM6QBzi5cTuKg==",
+  "dgSpecHash": "iAh6XG3dtwe1cBYjOlt7hfgfLurfuJWVbh9KF7rXInnTiWImnKXua+8vFVn/Lfa3026ydqRvvgW6sqAzIexzTw==",
   "success": true,
   "projectFilePath": "C:\\Users\\czare\\source\\repos\\KinoUG\\KinoUG.Server\\KinoUG.Server.csproj",
   "expectedPackageFiles": [
@@ -54,7 +54,7 @@
     "C:\\Users\\czare\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\czare\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\czare\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
-    "C:\\Users\\czare\\.nuget\\packages\\stripe.net\\44.4.0\\stripe.net.44.4.0.nupkg.sha512",
+    "C:\\Users\\czare\\.nuget\\packages\\stripe.net\\44.7.0\\stripe.net.44.7.0.nupkg.sha512",
     "C:\\Users\\czare\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
     "C:\\Users\\czare\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.5.0\\swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
     "C:\\Users\\czare\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.5.0\\swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
