@@ -299,3 +299,4 @@ C:\Users\kubak\Desktop\szkoła\4 semestr\kino\KinoUgBackEnd\KinoUG.Server\obj\De
 C:\Users\kubak\Desktop\szkoła\4 semestr\kino\KinoUgBackEnd\KinoUG.Server\obj\Debug\net8.0\KinoUG.Server.genruntimeconfig.cache
 C:\Users\kubak\Desktop\szkoła\4 semestr\kino\KinoUgBackEnd\KinoUG.Server\obj\Debug\net8.0\ref\KinoUG.Server.dll
 C:\Users\kubak\Desktop\szkoła\4 semestr\kino\KinoUgBackEnd\KinoUG.Server\bin\Debug\net8.0\Mailjet.Client.dll
+C:\Users\czare\source\repos\KinoUG\KinoUG.Server\bin\Debug\net8.0\Mailjet.Client.dll

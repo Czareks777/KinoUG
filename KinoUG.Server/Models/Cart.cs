@@ -11,6 +11,6 @@ namespace KinoUG.Server.Models
         public string UserId { get; set;}
         public List <CartItem> Items { get; set;}
         [NotMapped]
-        public decimal TotalPrice { get; set;}
+        public double TotalPrice { get; set;}
     }
 }

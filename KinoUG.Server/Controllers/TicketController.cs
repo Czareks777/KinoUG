@@ -31,7 +31,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles ="User")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         public async Task<IActionResult> AddTicket(AddTicketDTO addTicketDTO)
         {
             try
@@ -70,10 +70,41 @@ namespace KinoUG.Server.Controllers
             {
                 return BadRequest(e);
             }
-            
 
-            
-           
+        }
+
+        [HttpGet("ticketDetails/{ticketId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+        public async Task<ActionResult<Ticket>> GetTicketDetails(int ticketId)
+        {
+            try
+            {
+                string userEmail = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+                var user = await _userManager.FindByEmailAsync(userEmail);
+                if (user == null)
+                {
+                    return BadRequest("Invalid User email: the specified user does not exist.");
+                }
+
+                var ticket = await _context.Tickets
+                    .Where(t => t.Id == ticketId && t.UserId == user.Id)
+                    .Include(t => t.Seat)
+                    .Include(t => t.Schedule)
+                    .ThenInclude(s => s.Movie)
+                    .Include(u => u.User)
+                    .FirstOrDefaultAsync();
+
+                if (ticket == null)
+                {
+                    return NotFound("Ticket not found.");
+                }
+
+                return Ok(ticket);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("cancel/{ticketId}")]
@@ -91,6 +122,12 @@ namespace KinoUG.Server.Controllers
             _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
             return Ok("Ticket has been canceled and seat freed.");
+
+
+
+
         }
+
     }
+
 }

@@ -11,7 +11,7 @@ namespace KinoUG.Server.Models
         [ForeignKey("SeatId")]
         public int SeatId { get; set; }
         public Seat Seat { get; set; }
-        public int Price { get; set;}
+        public double Price { get; set;}
         [ForeignKey("ScheduleId")]
         public int ScheduleId { get; set; }
         public Schedule Schedule { get; set; }
