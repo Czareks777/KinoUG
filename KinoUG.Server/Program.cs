@@ -61,7 +61,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 4;
-    options.SignIn.RequireConfirmedEmail = true;
+    options.SignIn.RequireConfirmedEmail = false;
 }).AddEntityFrameworkStores<DataContext>()
   .AddDefaultTokenProviders();
 

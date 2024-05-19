@@ -1,35 +1,69 @@
 ﻿using KinoUG.Server.Data;
+using KinoUG.Server.DTO;
 using KinoUG.Server.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using KinoUG.Server.Repository.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KinoUG.Server.Controllers
 {
-   
-    public class UserController : BaseApiController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
     {
         private readonly DataContext _context;
-        public UserController(DataContext context)
+        private readonly ITokenService _tokenService;
+        private readonly UserManager<User> _userManager;
+
+        public UserController(DataContext context, ITokenService tokenService, UserManager<User> userManager)
         {
             _context = context;
+            _tokenService = tokenService;
+            _userManager = userManager;
         }
+
 
         [HttpGet]
         [Route("GetUsers")]
-       
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _context.Users
+                .Select(u => new UserDTO
+                {
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    Email = u.Email,
+                    UserName = u.UserName
+                })
+                .ToListAsync();
+            return Ok(users);
         }
 
+
+
         [HttpGet("{userId}")]
-       
-        public async Task<ActionResult<User>> GetUser(int userId)
+        public async Task<ActionResult<UserDTO>> GetUser(string userId)
         {
-            return await _context.Users.FindAsync(userId);
+            var user = await _context.Users
+                .Where(u => u.Id == userId.ToString())
+                .Select(u => new UserDTO
+                {
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    Email = u.Email,
+                    UserName = u.UserName,
+                })
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result =  user;
+
+            return Ok(result);
         }
-        
     }
 }

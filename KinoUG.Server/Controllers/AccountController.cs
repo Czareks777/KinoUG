@@ -92,24 +92,24 @@ namespace KinoUG.Server.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<string>> Login([FromBody] LoginDTO model)
+        public async Task<ActionResult> Login([FromBody] LoginDTO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                return BadRequest("Incorrect email or password.");
+                return BadRequest(new { message = "Incorrect email or password." });
             }
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
-                return BadRequest("Email not confirmed. Please check your inbox.");
+                return BadRequest(new { message = "Email not confirmed. Please check your inbox." });
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
             if (!result.Succeeded)
             {
-                return BadRequest("Incorrect email or password.");
+                return BadRequest(new { message = "Incorrect email or password." });
             }
 
             HttpContext.Session.SetString("UserEmail", user.Email);
@@ -117,7 +117,7 @@ namespace KinoUG.Server.Controllers
 
             var token = await _tokenService.GenerateJwtToken(user, TimeSpan.FromMinutes(600));
 
-            return Ok(token);
+            return Ok(new { Token = token });
         }
 
         [HttpGet]
