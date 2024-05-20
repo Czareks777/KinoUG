@@ -37,15 +37,16 @@ namespace KinoUG.Server.Controllers
             {
                 Title = film.Title,
                 Description = film.Description,
+                Image = film.Image
 
             };
             
             _context.Movies.Add(movie);
             
             await _context.SaveChangesAsync();
-            var movieDto = _automapper.Map<MovieDTO>(movie);    
+   
 
-            return Ok(movieDto);
+            return Ok(film);
         }
 
         // DELETE: api/movies/5

@@ -21,11 +21,13 @@ namespace KinoUG.Server.Services
 
         async public Task<string> GenerateJwtToken(User user, TimeSpan expiration)
         {
-            // Define the token claims (username and unique guid)
+            // Define the token claims (email and unique guid)
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Name, user.Name),
+                new Claim(JwtRegisteredClaimNames.FamilyName, user.Surname),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName )
             };
 
             // Add the roles to the token

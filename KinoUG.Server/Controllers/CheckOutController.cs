@@ -1,4 +1,5 @@
 ﻿using KinoUG.Server.Data;
+using KinoUG.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace KinoUG.Server.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CheckoutController : ControllerBase
+    
+    public class CheckoutController : BaseApiController
     {
         private readonly IConfiguration _configuration;
         private readonly DataContext _context;
@@ -62,10 +62,10 @@ namespace KinoUG.Server.Controllers
             var service = new SessionService();
             var session = await service.CreateAsync(options);
 
-            var response = new CheckoutOrderResponse
+            var response = new CheckOutOrderResponse
             {
                 SessionId = session.Id,
-                PublicKey = _configuration["Stripe:PublishableKey"]
+                PubKey = _configuration["Stripe:PublishableKey"]
             };
 
             return Ok(response);
@@ -91,9 +91,5 @@ namespace KinoUG.Server.Controllers
         }
     }
 
-    public class CheckoutOrderResponse
-    {
-        public string SessionId { get; set; }
-        public string PublicKey { get; set; }
-    }
+    
 }
