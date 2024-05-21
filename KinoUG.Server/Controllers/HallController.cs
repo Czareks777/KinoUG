@@ -14,6 +14,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpGet("{hallId}")]
+
         public async Task<IActionResult> GetHall(int hallId)
         {
             var seats = await _context.Seats.Where(s => s.HallId == hallId).Select(s => new

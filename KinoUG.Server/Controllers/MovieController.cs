@@ -22,6 +22,7 @@ namespace KinoUG.Server.Controllers
         }
 
 
+        [Authorize(Roles = Roles.Admin)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies()
         {
@@ -31,6 +32,7 @@ namespace KinoUG.Server.Controllers
 
         
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> AddMovie(AddMovieDTO film)
         {
             var movie = new Movie
@@ -51,7 +53,8 @@ namespace KinoUG.Server.Controllers
 
         // DELETE: api/movies/5
         [HttpDelete("{id}")]
-        
+        [Authorize(Roles = Roles.Admin)]
+
         public async Task<IActionResult> DeleteMovie(int id)
         {
             var movie = await _context.Movies.FindAsync(id);
@@ -68,6 +71,7 @@ namespace KinoUG.Server.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> UpdateMovie(int id, EditMovieDto updatedMovie)
         {
 

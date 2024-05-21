@@ -25,6 +25,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
         {
             return await _context.Tickets.ToListAsync();
@@ -108,6 +109,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpPost("cancel/{ticketId}")]
+        [Authorize]
         public async Task<IActionResult> CancelTicket(int ticketId)
         {
             var ticket = await _context.Tickets.Include(t => t.SeatId)

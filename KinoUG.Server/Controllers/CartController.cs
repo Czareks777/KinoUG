@@ -1,5 +1,6 @@
 ﻿using KinoUG.Server.Data;
 using KinoUG.Server.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpGet("{userId}")]
-
+        [Authorize]
         public async Task <IActionResult> getCart(string userId)
         {
             var cart = await _context.Carts
@@ -32,6 +33,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpPost("{userId}")]
+        [Authorize]
         public async Task<IActionResult> AddToCart(string userId, CartItem cartItem) { 
          var cart = await _context.Carts.Include(c=>c.Items).FirstOrDefaultAsync(c => c.UserId == userId);
             if (cart == null)
@@ -56,6 +58,7 @@ namespace KinoUG.Server.Controllers
             }
 
         [HttpDelete("{userId}")]
+        [Authorize]
         public async Task<IActionResult> RemoveItemFromCart (string userId, int itemId)
         {
             var cart = await _context.Carts.Include(c => c.Items).FirstOrDefaultAsync(c => c.UserId == userId);

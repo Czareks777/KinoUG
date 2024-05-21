@@ -31,6 +31,7 @@ namespace KinoUG.Server.Controllers
 
         [HttpGet]
         [Route("GetUsers")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
             var users = await _context.Users
@@ -46,6 +47,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpGet("{userId}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<UserDTO>> GetUser(string userId)
         {
             var user = await _context.Users
@@ -95,6 +97,7 @@ namespace KinoUG.Server.Controllers
 
         [HttpPost]
         [Route("CreateUser")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<UserDTO>> CreateUser(CreateUserDTO createUserDTO)
         {
             try
@@ -132,6 +135,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpPut("{userId}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult> UpdateUser(string userId, UpdateUserDTO updateUserDTO)
         {
             try
@@ -164,6 +168,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpDelete("{userId}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult> DeleteUser(string userId)
         {
            
@@ -186,6 +191,7 @@ namespace KinoUG.Server.Controllers
         
         
         [HttpPost("{userId}/assign-role")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult> AssignRole(string userId, [FromBody] string role)
         {
             try
@@ -213,6 +219,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpPost("{userId}/remove-role")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult> RemoveRole(string userId, [FromBody] string role)
         {
             try

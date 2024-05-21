@@ -1,5 +1,6 @@
 ﻿using KinoUG.Server.Data;
 using KinoUG.Server.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpPost("create-checkout-session/{userId}")]
+        [Authorize]
         public async Task<ActionResult> CheckoutOrder(string userId)
         {
             var cart = await _context.Carts

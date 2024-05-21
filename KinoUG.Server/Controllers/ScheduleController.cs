@@ -1,6 +1,7 @@
 ﻿using KinoUG.Server.Data;
 using KinoUG.Server.DTO;
 using KinoUG.Server.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,8 +14,12 @@ namespace KinoUG.Server.Controllers
         {
             _context = context;
         }
+
+
+
+
         [HttpGet("all")]
-        
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<List<MinScheduleDTO>>> GetScheduleList()
         {
             var schedules = await _context.Schedules
@@ -30,6 +35,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpGet("latest6")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<List<MinScheduleDTO>>> GetScheduleListOf6()
         {
             var schedules = await _context.Schedules
@@ -50,6 +56,7 @@ namespace KinoUG.Server.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ScheduleDTO>> GetSchedule(int id)
         {
             var tickets = await _context.Tickets
@@ -85,6 +92,7 @@ namespace KinoUG.Server.Controllers
         }
        
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ScheduleDTO>> AddSchedule(AddScheduleDTO addScheduleDTO)
         {
             var schedule = new Schedule
@@ -122,6 +130,8 @@ namespace KinoUG.Server.Controllers
                 }).ToList()
             };
         }
+        
+        
         /*
         [HttpPut("{id}")]
         public async Task<ActionResult<ScheduleDTO>> UpdateSchedule(int id, AddScheduleDTO addScheduleDTO)
