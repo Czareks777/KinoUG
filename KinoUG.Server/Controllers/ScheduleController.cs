@@ -25,8 +25,29 @@ namespace KinoUG.Server.Controllers
                 Id = s.Id,
                 MovieTitle = s.Movie.Title,
                 Date = s.Date,
+                Image = s.Movie.Image
             }).ToList();
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<MinScheduleDTO>>> GetScheduleListOf6()
+        {
+            var schedules = await _context.Schedules
+                .Include(s => s.Movie)
+                .OrderByDescending(s => s.Date)
+                .Take(6)
+                .ToListAsync();
+
+            return schedules.Select(s => new MinScheduleDTO
+            {
+                Id = s.Id,
+                MovieTitle = s.Movie.Title,
+                Date = s.Date,
+                Image = s.Movie.Image
+            }).ToList();
+        }
+
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ScheduleDTO>> GetSchedule(int id)

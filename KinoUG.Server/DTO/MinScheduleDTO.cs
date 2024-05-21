@@ -8,7 +8,7 @@ namespace KinoUG.Server.DTO
         public DateTime Date { get; set; }
         public string MovieTitle { get; set; }
 
-
+        public string Image { get; set; }
 
     }
 }

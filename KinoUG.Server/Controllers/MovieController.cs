@@ -67,6 +67,47 @@ namespace KinoUG.Server.Controllers
         }
 
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMovie(int id, EditMovieDto updatedMovie)
+        {
+
+            var movie = await _context.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            movie.Title = updatedMovie.Title;
+            movie.Description = updatedMovie.Description;
+            movie.Image = updatedMovie.Image;
+           
+
+            _context.Entry(movie).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MovieExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool MovieExists(int id)
+        {
+            return _context.Movies.Any(e => e.Id == id);
+        }
+
 
     }
 }

@@ -3,17 +3,11 @@ using KinoUG.Server.Models;
 using KinoUG.Server.Repository.Interfaces;
 using KinoUG.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Stripe;
-using System.Reflection;
-using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,8 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddCors(o => o.AddPolicy("Kino", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }));
 builder.Services.AddControllers();
-builder.Services.AddControllers(
-options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ITokenService, KinoUG.Server.Services.TokenService>();
@@ -130,6 +122,7 @@ using (var scope = app.Services.CreateScope())
     {
         await roleManager.CreateAsync(new IdentityRole(Roles.User));
     }
+    var seedAdmin = services.GetRequiredService<SeedAccountAdmin>();
     var seedHall = services.GetRequiredService<SeedHall>();
     await seedHall.InitializeRoomTemplate();
 }
