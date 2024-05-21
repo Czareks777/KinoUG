@@ -47,7 +47,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddScoped<ITokenService, KinoUG.Server.Services.TokenService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<SeedHall>();
+
+builder.Services.AddTransient<SeedHall>();
+builder.Services.AddScoped<SeedAccountAdmin>();
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -122,7 +124,7 @@ using (var scope = app.Services.CreateScope())
     {
         await roleManager.CreateAsync(new IdentityRole(Roles.User));
     }
-    var seedAdmin = services.GetRequiredService<SeedAccountAdmin>();
+    await SeedAccountAdmin.SeedAdminUser(services);
     var seedHall = services.GetRequiredService<SeedHall>();
     await seedHall.InitializeRoomTemplate();
 }

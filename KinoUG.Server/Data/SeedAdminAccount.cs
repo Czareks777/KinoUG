@@ -49,6 +49,8 @@ namespace KinoUG.Server.Models
                 // Handle the case where the user could not be created
                 throw new Exception("Failed to create the admin user");
             }
+
+            
         }
     }
 }

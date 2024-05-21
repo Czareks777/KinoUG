@@ -13,8 +13,8 @@ namespace KinoUG.Server.Controllers
         {
             _context = context;
         }
-
-        [HttpGet]
+        [HttpGet("all")]
+        
         public async Task<ActionResult<List<MinScheduleDTO>>> GetScheduleList()
         {
             var schedules = await _context.Schedules
@@ -29,7 +29,7 @@ namespace KinoUG.Server.Controllers
             }).ToList();
         }
 
-        [HttpGet]
+        [HttpGet("latest6")]
         public async Task<ActionResult<List<MinScheduleDTO>>> GetScheduleListOf6()
         {
             var schedules = await _context.Schedules
