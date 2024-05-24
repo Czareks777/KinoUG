@@ -1,17 +1,14 @@
-﻿using Mailjet.Client;
+﻿using KinoUG.Server.Repository.Interfaces;
+using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Threading.Tasks;
 
 namespace KinoUG.Server.Services
 {
-    public interface IEmailService
-    {
-        Task SendEmailAsync(string to, string subject, string html);
-    }
-
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _configuration;
@@ -23,7 +20,7 @@ namespace KinoUG.Server.Services
             _logger = logger;
         }
 
-        public async Task SendEmailAsync(string to, string subject, string html)
+        public async Task SendEmailAsync(string to, string subject, string html, string text)
         {
             var client = new MailjetClient(_configuration["EmailSettings:MailjetApiKey"], _configuration["EmailSettings:MailjetSecretKey"]);
             var request = new MailjetRequest
@@ -31,9 +28,10 @@ namespace KinoUG.Server.Services
                 Resource = Send.Resource,
             }
             .Property(Send.FromEmail, _configuration["EmailSettings:From"])
-            .Property(Send.FromName, "Your Name or Company")
+            .Property(Send.FromName, "KinoUG")
             .Property(Send.Subject, subject)
             .Property(Send.HtmlPart, html)
+            .Property(Send.TextPart, text)
             .Property(Send.Recipients, new JArray {
                 new JObject {
                     {"Email", to}
