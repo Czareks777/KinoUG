@@ -27,7 +27,8 @@ namespace KinoUG.Server.Services
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Name, user.Name),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.Surname),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName )
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id)
             };
 
             // Add the roles to the token

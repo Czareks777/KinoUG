@@ -24,13 +24,16 @@ namespace KinoUG.Server.Controllers
         {
             var schedules = await _context.Schedules
                 .Include(s => s.Movie)
+                .OrderBy(s => s.Id)
+                .Skip(3)
                 .ToListAsync();
             return schedules.Select(s => new MinScheduleDTO
             {
                 Id = s.Id,
                 MovieTitle = s.Movie.Title,
                 Date = s.Date,
-                Image = s.Movie.Image
+                Image = s.Movie.Image,
+                Description = s.Movie.Description
             }).ToList();
         }
 
@@ -78,7 +81,10 @@ namespace KinoUG.Server.Controllers
                 {
                     Id = schedule.Movie.Id,
                     Title = schedule.Movie.Title,
-                    Description = schedule.Movie.Description
+                    Description = schedule.Movie.Description,
+                    Image = schedule.Movie.Image,
+                    
+                    
                 },
                 Seats = schedule.Hall.Seats.Select(s => new SeatDTO
                 {
