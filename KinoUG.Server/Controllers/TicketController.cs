@@ -109,10 +109,11 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpPost("cancel/{ticketId}")]
-        [Authorize]
+        
         public async Task<IActionResult> CancelTicket(int ticketId)
         {
-            var ticket = await _context.Tickets.Include(t => t.SeatId)
+            var ticket = await _context.Tickets
+                .Include(t => t.Seat) 
                 .FirstOrDefaultAsync(t => t.Id == ticketId);
 
             if (ticket == null)
@@ -120,14 +121,9 @@ namespace KinoUG.Server.Controllers
                 return NotFound("Ticket not found.");
             }
 
-            var seat = await _context.Seats.FindAsync(ticket.SeatId);
             _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
             return Ok("Ticket has been canceled and seat freed.");
-
-
-
-
         }
 
     }
