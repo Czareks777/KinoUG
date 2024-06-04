@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using KinoUG.Server.Data;
+﻿using KinoUG.Server.Data;
 using KinoUG.Server.DTO;
 using KinoUG.Server.Models;
 using KinoUG.Server.Repository.Interfaces;
@@ -9,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace KinoUG.Server.Controllers
 {
@@ -60,6 +61,17 @@ namespace KinoUG.Server.Controllers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
 
+            var htmlContent = GenerateConfirmationEmailHtml(user.Name, confirmationLink);
+            var textContent = GenerateConfirmationEmailText(confirmationLink);
+
+            try
+            {
+                await _emailService.SendEmailAsync(user.Email, "Confirm your email", htmlContent, textContent);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Email sending failed: {ex.Message}");
+            }
                 try
                 {
                     await _emailService.SendEmailAsync(user.Email, "Confirm your email", $"Please confirm your account by clicking this link: <a href=\"{confirmationLink}\">link</a>");
@@ -145,6 +157,8 @@ namespace KinoUG.Server.Controllers
         [Route("session-info")]
         public IActionResult SessionInfo()
         {
+            var email = HttpContext.Session.GetString("UserEmail");
+            var password = HttpContext.Session.GetString("userName");
             try
             {
                 var email = HttpContext.Session.GetString("UserEmail");
@@ -155,6 +169,92 @@ namespace KinoUG.Server.Controllers
                     return Unauthorized("Session has expired or user not logged in.");
                 }
 
+            return Ok(new
+            {
+                Email = email,
+                Password = password
+            });
+        }
+
+        private string GenerateConfirmationEmailHtml(string userName, string confirmationLink)
+        {
+            return $@"
+            <html>
+                <head>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            color: #333;
+                        }}
+                        .container {{
+                            width: 80%;
+                            margin: 0 auto;
+                            padding: 20px;
+                            border: 1px solid #ccc;
+                            border-radius: 10px;
+                            background-color: #f9f9f9;
+                        }}
+                        .header {{
+                            text-align: center;
+                            padding-bottom: 20px;
+                        }}
+                        .content {{
+                            padding: 20px;
+                            text-align: center;
+                            color: #000000;
+                        }}
+                        .button {{
+                            display: inline-block;
+                            padding: 10px 20px;
+                            margin: 20px 0;
+                            border: none;
+                            border-radius: 5px;
+                            background-color: #28a745;
+                            color: #ffffff;;
+                            text-decoration: none;
+                            font-size: 16px;
+                        }}
+                        .footer {{
+                            text-align: center;
+                            padding-top: 20px;
+                            font-size: 12px;
+                            color: #777;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>Witamy w KinoUG!</h2>
+                        </div>
+                        <div class='content'>
+                            <p>Cześć {userName},</p>
+                            <p>Dziękujemy za zarejestrowanie się na platformie KinoUG. Potwierdź swoje konto klikając na poniższy przycisk:</p>
+                            <a href='{confirmationLink}' class='button'>Potwierdź</a>
+                        </div>
+                        <div class='footer'>
+                            <p>Jeśli nie rejestrowałeś się na naszej platformie, prosimy zignorować tą wiadomość.</p>
+                            <p>&copy; 2024 KinoUG. Wszelkie prawa zastrzeżone.</p>
+                        </div>
+                    </div>
+                </body>
+            </html>";
+        }
+
+        private string GenerateConfirmationEmailText(string confirmationLink)
+        {
+            return $@"
+            Część,
+
+            Dziękujemy za zarejestrowanie się na platformie KinoUG. Potwierdź swoje konto klikając na przycisk poniżej
+
+            {confirmationLink}
+
+            Jeśli nie rejestrowałeś się na naszej platformie, prosimy zignorować tą wiadomość.
+
+            Życzymy miłego dnia,
+            KinoUG";
+        }
                 return Ok(new
                 {
                     Email = email,
