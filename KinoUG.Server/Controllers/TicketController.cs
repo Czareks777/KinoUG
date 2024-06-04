@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims; // Import necessary for ClaimsIdentity
+using System.Security.Claims; 
 
 namespace KinoUG.Server.Controllers
 {
@@ -25,6 +25,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpGet]
+        [Route("GetTickets")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
         {
@@ -32,7 +33,7 @@ namespace KinoUG.Server.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User,Admin")]
         public async Task<IActionResult> AddTicket(AddTicketDTO addTicketDTO)
         {
             try
@@ -112,18 +113,25 @@ namespace KinoUG.Server.Controllers
         
         public async Task<IActionResult> CancelTicket(int ticketId)
         {
-            var ticket = await _context.Tickets
-                .Include(t => t.Seat) 
+            try
+            {
+                var ticket = await _context.Tickets
+                .Include(t => t.Seat)
                 .FirstOrDefaultAsync(t => t.Id == ticketId);
 
-            if (ticket == null)
-            {
-                return NotFound("Ticket not found.");
-            }
+                if (ticket == null)
+                {
+                    return NotFound("Ticket not found.");
+                }
 
-            _context.Tickets.Remove(ticket);
-            await _context.SaveChangesAsync();
-            return Ok("Ticket has been canceled and seat freed.");
+                _context.Tickets.Remove(ticket);
+                await _context.SaveChangesAsync();
+                return Ok("Ticket has been canceled and seat freed.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
     }

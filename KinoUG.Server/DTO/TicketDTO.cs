@@ -1,14 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace KinoUG.Server.DTO
+﻿namespace KinoUG.Server.DTO
 {
     public class TicketDTO
     {
         public int Id { get; set; }
-        [ForeignKey("SeatId")]
         public int SeatId { get; set; }
-        [ForeignKey("ScheduleId")]
-        public int ScheduleId { get; set; } 
-        public int Price { get; set; }  
+        public int ScheduleId { get; set; }
+        public double Price { get; set; }
+        public string MovieTitle { get; set; }
+        public string MovieImage { get; set; }
     }
 }

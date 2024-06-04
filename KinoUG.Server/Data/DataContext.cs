@@ -29,7 +29,8 @@ namespace KinoUG.Server.Data
             modelBuilder.Entity<User>()
                 .HasMany(u => u.UserTickets)
                 .WithOne(t => t.User)
-                .HasForeignKey(t => t.UserId);
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             
             
             modelBuilder.Entity<Hall>()
@@ -46,9 +47,14 @@ namespace KinoUG.Server.Data
                 .HasMany(s => s.Tickets)
                 .WithOne(t => t.Schedule)
                 .HasForeignKey(t => t.ScheduleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Movie>() 
+                .HasMany(m => m.Schedules)
+                .WithOne(s => s.Movie)
+                .HasForeignKey(s => s.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+                
 
 
         }

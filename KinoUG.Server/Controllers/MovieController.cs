@@ -51,19 +51,29 @@ namespace KinoUG.Server.Controllers
             return Ok(film);
         }
 
-        // DELETE: api/movies/5
+
         [HttpDelete("{id}")]
         [Authorize(Roles = Roles.Admin)]
-
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await _context.Movies.Include(m => m.Schedules)
+                                              .ThenInclude(s => s.Tickets)
+                                              .FirstOrDefaultAsync(m => m.Id == id);
+
             if (movie == null)
             {
                 return NotFound();
             }
 
+            foreach (var schedule in movie.Schedules)
+            {
+                _context.Tickets.RemoveRange(schedule.Tickets);
+            }
+
+            _context.Schedules.RemoveRange(movie.Schedules);
+
             _context.Movies.Remove(movie);
+
             await _context.SaveChangesAsync();
 
             return NoContent();

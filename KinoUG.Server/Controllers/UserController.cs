@@ -13,9 +13,8 @@ using System.Linq;
 
 namespace KinoUG.Server.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    
+    public class UserController : BaseApiController
     {
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
@@ -34,39 +33,68 @@ namespace KinoUG.Server.Controllers
         [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            var users = await _context.Users
-                .Select(u => new UserDTO
-                {
-                    Name = u.Name,
-                    Surname = u.Surname,
-                    Email = u.Email,
-                    UserName = u.Email
-                })
-                .ToListAsync();
-            return Ok(users);
+            try
+            {
+                var users = await _context.Users
+                    .Include(u => u.UserTickets)
+                        .ThenInclude(t => t.Seat)
+                    .Include(u => u.UserTickets)
+                        .ThenInclude(t => t.Schedule)
+                            .ThenInclude(s => s.Movie)
+                    .Select(u => new UserDTO
+                    {
+                        Name = u.Name,
+                        Surname = u.Surname,
+                        Email = u.Email,
+                        UserName = u.UserName,
+                        UserTickets = u.UserTickets.Select(t => new TicketDTO
+                        {
+                            Id = t.Id,
+                            SeatId = t.SeatId,
+                            ScheduleId = t.ScheduleId,
+                            Price = t.Price,
+                            MovieTitle = t.Schedule.Movie.Title,
+                            MovieImage = t.Schedule.Movie.Image
+                        }).ToList()
+                    })
+                    .ToListAsync();
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An error occurred while getting the users", Details = ex.Message });
+            }
         }
 
         [HttpGet("{userId}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<UserDTO>> GetUser(string userId)
         {
-            var user = await _context.Users
-                .Where(u => u.Id == userId)
-                .Select(u => new UserDTO
-                {
-                    Name = u.Name,
-                    Surname = u.Surname,
-                    Email = u.Email,
-                    UserName = u.Email
-                })
-                .FirstOrDefaultAsync();
-
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                var user = await _context.Users
+               .Where(u => u.Id == userId)
+               .Select(u => new UserDTO
+               {
+                   Name = u.Name,
+                   Surname = u.Surname,
+                   Email = u.Email,
+                   UserName = u.Email
+               })
+               .FirstOrDefaultAsync();
 
-            return Ok(user);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(user);
+            }
+           catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An error occurred while getting the user", Details = ex.Message });
+            }
         }
 
         [HttpGet]
@@ -74,25 +102,32 @@ namespace KinoUG.Server.Controllers
         [Authorize]
         public async Task<ActionResult<UserDTO>> GetCurrentUser()
         {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-
-            var user = await _context.Users
-                .Where(u => u.Email == userEmail)
-                .Select(u => new UserDTO
-                {
-                    Name = u.Name,
-                    Surname = u.Surname,
-                    Email = u.Email,
-                    UserName = u.Email
-                })
-                .FirstOrDefaultAsync();
-
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            return Ok(user);
+                var user = await _context.Users
+                    .Where(u => u.Email == userEmail)
+                    .Select(u => new UserDTO
+                    {
+                        Name = u.Name,
+                        Surname = u.Surname,
+                        Email = u.Email,
+                        UserName = u.Email
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An error occurred while getting the current user", Details = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -167,12 +202,13 @@ namespace KinoUG.Server.Controllers
             }
         }
 
-        [HttpDelete("{userId}")]
+        [HttpDelete("{username}")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult> DeleteUser(string userId)
+        public async Task<ActionResult> DeleteUserByUsername(string username)
         {
-           
-                var user = await _context.Users.FindAsync(userId);
+            try
+            {
+                var user = await _userManager.FindByNameAsync(username);
 
                 if (user == null)
                 {
@@ -188,8 +224,13 @@ namespace KinoUG.Server.Controllers
 
                 return NoContent();
             }
-        
-        
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An error occurred while deleting the user", Details = ex.Message });
+            }
+        }
+
+
         [HttpPost("{userId}/assign-role")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult> AssignRole(string userId, [FromBody] string role)

@@ -20,64 +20,86 @@ namespace KinoUG.Server.Controllers
         [Authorize]
         public async Task <IActionResult> getCart(string userId)
         {
-            var cart = await _context.Carts
+           try
+            {
+                var cart = await _context.Carts
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Ticket)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
-            
-            if (cart == null)
-            {
-                return NotFound();
+
+                if (cart == null)
+                {
+                    return NotFound();
+                }
+                return Ok(cart);
             }
-            return Ok(cart);
+            catch (System.Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
         }
 
         [HttpPost("{userId}")]
         [Authorize]
-        public async Task<IActionResult> AddToCart(string userId, CartItem cartItem) { 
-         var cart = await _context.Carts.Include(c=>c.Items).FirstOrDefaultAsync(c => c.UserId == userId);
-            if (cart == null)
+        public async Task<IActionResult> AddToCart(string userId, CartItem cartItem) 
+        { 
+         try
             {
-                cart = new Cart
+                var cart = await _context.Carts.Include(c => c.Items).FirstOrDefaultAsync(c => c.UserId == userId);
+                if (cart == null)
                 {
-                    UserId = userId,
-                    Items = new List<CartItem>()
-                };
-                _context.Carts.Add(cart);
-            }
-            else
-            {
-                cart.Items.Add(cartItem);
-            }
+                    cart = new Cart
+                    {
+                        UserId = userId,
+                        Items = new List<CartItem>()
+                    };
+                    _context.Carts.Add(cart);
+                }
+                else
+                {
+                    cart.Items.Add(cartItem);
+                }
 
                 cart.TotalPrice = cart.Items.Sum(i => i.Price * i.Quantity);
                 await _context.SaveChangesAsync();
-            
-                
+
+
                 return Ok(cart);
+            }
+            catch (System.Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
             }
 
         [HttpDelete("{userId}")]
         [Authorize]
         public async Task<IActionResult> RemoveItemFromCart (string userId, int itemId)
         {
-            var cart = await _context.Carts.Include(c => c.Items).FirstOrDefaultAsync(c => c.UserId == userId);
-
-            if (cart == null)
+            try
             {
-                return NotFound();
-            }
+                var cart = await _context.Carts.Include(c => c.Items).FirstOrDefaultAsync(c => c.UserId == userId);
 
-            var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
-            if ( item == null)
-            {
-                return NotFound();
+                if (cart == null)
+                {
+                    return NotFound();
+                }
+
+                var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+                cart.Items.Remove(item);
+                cart.TotalPrice = cart.Items.Sum(i => i.Price * i.Quantity);
+
+                await _context.SaveChangesAsync();
+                return Ok(cart);
             }
-            cart.Items.Remove(item);
-            cart.TotalPrice = cart.Items.Sum(i => i.Price * i.Quantity);
-            
-            await _context.SaveChangesAsync();
-            return Ok(cart);
+            catch (System.Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
         }
     
     
